@@ -8,17 +8,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class SprintDeleteCommand extends BaseCommand
+class IssueDeleteCommand extends BaseCommand
 {
     protected function configure()
     {
         $this
-            ->setName('agile:sprint:delete')
-            ->setDescription('Delete a sprint')
+            ->setName('agile:issue:delete')
+            ->setDescription('Delete an issue')
             ->addArgument(
                 'name',
                 InputArgument::REQUIRED,
-                "Sprint's name"
+                "Issue's name"
             )
         ;
     }
@@ -26,12 +26,12 @@ class SprintDeleteCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $io->title('Sprint deletion');
+        $io->title('Issue deletion');
 
-        $sprint = $this->getSprintRepository()->findOneBy(['name' => $input->getArgument('name')]);
-        $this->getEntityManager()->remove($sprint);
+        $issue = $this->getIssueRepository()->findOneBy(['name' => $input->getArgument('name')]);
+        $this->getEntityManager()->remove($issue);
         $this->getEntityManager()->flush();
 
-        $io->success(sprintf("Delete the sprint with name '%s'", $sprint->getName()));
+        $io->success(sprintf("Delete the issue with name '%s'", $issue->getName()));
     }
 }
