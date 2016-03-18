@@ -42,6 +42,10 @@ class SprintStatusCommand extends BaseCommand
         $this->showIssues($this->getIssueRepository()->getAdded($sprint), $io);
 
         $stats = [
+            sprintf('<info>%s</info> Total issues', $this->getIssueRepository()->countTotal($sprint)),
+            sprintf('<info>%s</info> Added issues', $this->getIssueRepository()->countTotal($sprint, true)),
+            sprintf('<info>%s</info> Completed issues', $this->getIssueRepository()->countTotalCompleted($sprint)),
+            sprintf('<info>%s</info> Not completed issues', $this->getIssueRepository()->countTotalCompleted($sprint, false)),
             sprintf('<info>%s</info> Initial total complexity', $this->getIssueRepository()->countTotalComplexity($sprint)),
             sprintf('<info>%s</info> Initial Completed complexity', $this->getIssueRepository()->countTotalComplexity($sprint, true)),
             sprintf('<info>%s</info> Added after sprint start total complexity', $this->getIssueRepository()->countTotalComplexity($sprint, false, true)),

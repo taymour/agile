@@ -3,7 +3,6 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Issue;
-use AppBundle\Entity\Sprint;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,6 +38,12 @@ class IssueCreateCommand extends BaseCommand
                 InputOption::VALUE_NONE,
                 "Added to sprint after start time"
             )
+            ->addOption(
+                'completed',
+                'c',
+                InputOption::VALUE_NONE,
+                "Completed"
+            )
         ;
     }
 
@@ -53,6 +58,8 @@ class IssueCreateCommand extends BaseCommand
         $issue = (new Issue())
             ->setName($input->getArgument('name'))
             ->setComplexity((float)$input->getArgument('complexity'))
+            ->setAdded($input->hasOption('added') ? true : false)
+            ->setCompleted($input->hasOption('completed') ? true : false)
             ->setCreated(new \DateTime())
             ->setSprint($sprint)
         ;

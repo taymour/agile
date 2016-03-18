@@ -53,4 +53,31 @@ class IssueRepository extends \Doctrine\ORM\EntityRepository
 
         return current($qb->getQuery()->getSingleResult()) ?: 0;
     }
+
+    public function countTotalCompleted(Sprint $sprint, $completed = true)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $qb
+            ->select('COUNT(i)')
+            ->andWhere($qb->expr()->eq('i.sprint', $sprint->getId()))
+            ->andWhere($qb->expr()->eq('i.completed', $completed ? 1 : 0))
+        ;
+
+        return current($qb->getQuery()->getSingleResult()) ?: 0;
+    }
+
+    public function countTotal(Sprint $sprint, $onlyAdded = false)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $qb
+            ->select('COUNT(i)')
+            ->andWhere($qb->expr()->eq('i.sprint', $sprint->getId()))
+        ;
+
+        if ($onlyAdded) {
+            $qb->andWhere($qb->expr()->eq('i.added', 1));
+        }
+
+        return current($qb->getQuery()->getSingleResult()) ?: 0;
+    }
 }

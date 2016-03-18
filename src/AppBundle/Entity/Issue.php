@@ -203,6 +203,8 @@ class Issue
     public function setAdded($added)
     {
         $this->added = $added;
+
+        return $this;
     }
 }
 
