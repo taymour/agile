@@ -54,12 +54,11 @@ class IssueCreateCommand extends BaseCommand
         $sprintName = $input->getOption('sprint');
         $sprint = $sprintName ? $this->getSprintRepository()->findOneBy(['name' => $sprintName]) : $this->getSprintRepository()->getCurrentSprint();
 
-
         $issue = (new Issue())
             ->setName($input->getArgument('name'))
             ->setComplexity((float)$input->getArgument('complexity'))
-            ->setAdded($input->hasOption('added') ? true : false)
-            ->setCompleted($input->hasOption('completed') ? true : false)
+            ->setAdded($input->getOption('added') ? true : false)
+            ->setCompleted($input->getOption('completed') ? true : false)
             ->setCreated(new \DateTime())
             ->setSprint($sprint)
         ;
