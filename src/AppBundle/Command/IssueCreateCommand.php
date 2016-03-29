@@ -51,11 +51,13 @@ class IssueCreateCommand extends BaseCommand
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Issue creation');
+        $issueName = $input->getArgument('name');
         $sprintName = $input->getOption('sprint');
         $sprint = $sprintName ? $this->getSprintRepository()->findOneBy(['name' => $sprintName]) : $this->getSprintRepository()->getCurrentSprint();
 
-        $issue = (new Issue())
-            ->setName($input->getArgument('name'))
+        $issue = $this->getIssueRepository()->findOneBy(['name' => $issueName]) ?: new Issue();
+        $issue
+            ->setName($issueName)
             ->setComplexity((float)$input->getArgument('complexity'))
             ->setAdded($input->getOption('added') ? true : false)
             ->setCompleted($input->getOption('completed') ? true : false)

@@ -130,7 +130,9 @@ class Issue
      */
     public function setCreated($created)
     {
-        $this->created = $created;
+        if (!$this->created) {
+            $this->created = $created;
+        }
 
         return $this;
     }
