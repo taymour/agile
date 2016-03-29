@@ -1,0 +1,7 @@
+services:
+    agile.connector.jira:
+        class: AppBundle\Connector\JiraConnector
+        arguments:
+            - "%jira_api_domain_name%"
+            - "%project%"
+            - "%jira_api_credentials%"

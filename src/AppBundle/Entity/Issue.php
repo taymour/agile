@@ -59,7 +59,7 @@ class Issue
     /**
      * @var Sprint
      *
-     * @ORM\ManyToOne(targetEntity="Sprint", inversedBy="issues")
+     * @ORM\ManyToOne(targetEntity="Sprint", inversedBy="issues", cascade={"persist"})
      */
     private $sprint;
 

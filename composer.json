@@ -7,6 +7,9 @@
         "psr-4": { "": "src/" },
         "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
+    "repositories": [
+        {"type": "vcs", "url": "git@github.com:taymour/JiraApiBundle.git"}
+    ],
     "autoload-dev": {
         "psr-4": { "Tests\\": "tests/" }
     },
@@ -26,6 +29,7 @@
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0"
     },
+    "minimum-stability": "dev",
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",

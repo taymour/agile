@@ -38,7 +38,7 @@ class Sprint
     /**
      * @var Issue[]
      *
-     * @ORM\OneToMany(targetEntity="Issue", mappedBy="sprint")
+     * @ORM\OneToMany(targetEntity="Issue", mappedBy="sprint", cascade={"persist"})
      */
     private $issues;
 
@@ -109,11 +109,39 @@ class Sprint
     }
 
     /**
-     * @param array $issues
+     * @param $issueName
+     * @return Issue
+     */
+    public function findIssueByName($issueName)
+    {
+        foreach ($this->getIssues() as $issue) {
+            if ($issue->getName() == $issueName) {
+                return $issue;
+            }
+        }
+    }
+
+    /**
+     * @param Issue $issue
+     * @return $this
+     */
+    public function addIssue(Issue $issue)
+    {
+        $this->issues[] = $issue;
+
+        return $this;
+    }
+
+    /**
+     * @param Issue[] $issues
      * @return $this
      */
     public function setIssues(array $issues)
     {
+        foreach ($issues as $index => $issue) {
+            $issues[$index]->setSprint($this);
+        }
+
         $this->issues = $issues;
 
         return $this;
