@@ -127,6 +127,7 @@ class Sprint
      */
     public function addIssue(Issue $issue)
     {
+        $issue->setSprint($this);
         $this->issues[] = $issue;
 
         return $this;

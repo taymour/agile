@@ -11,6 +11,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class SprintSyncCommand extends BaseCommand
 {
+    protected $init = false;
+
     protected function configure()
     {
         $this
@@ -36,12 +38,14 @@ class SprintSyncCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title('Sprint Sync');
 
+        $this->init = $input->getOption('init');
+
         $sprintName = $input->getOption('name');
         $sprint = $sprintName ? $this->getSprintRepository()->findOneBy(
             ['name' => $sprintName]
         ) : $this->getSprintRepository()->getCurrentSprint();
 
-        if ($input->getOption('init')) {
+        if ($this->init) {
             $io->section('Sprint reset');
 
             foreach ($sprint->getIssues() as $issue) {
@@ -72,20 +76,31 @@ class SprintSyncCommand extends BaseCommand
      */
     protected function updateSprintIssues(Sprint $sprint, array $issues, $init = false)
     {
-        if ($init) {
-            $sprint->setIssues($issues);
-            return;
-        }
-
         foreach ($issues as $issue) {
             $sprintIssue = $sprint->findIssueByName($issue->getName());
 
             if ($sprintIssue) {
                 $sprintIssue->setCompleted($issue->getCompleted());
+                $sprintIssue->setComplexity($issue->getComplexity());
             } else {
+                $sprintIssue = $this->getIssueRepository()->findOneBy(
+                    ['name' => $issue->getName()]
+                );
+
+                if ($sprintIssue) {
+                    $sprintIssue->setCompleted($issue->getCompleted());
+                    $sprintIssue->setComplexity($issue->getComplexity());
+                    $issue = $sprintIssue;
+                }
+
                 $issue->setAdded(true);
-                $sprint->addIssue($issue);
             }
+
+            if ($this->init) {
+                $issue->setAdded(false);
+            }
+
+            $sprint->addIssue($issue);
         }
     }
 }
