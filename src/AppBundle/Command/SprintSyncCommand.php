@@ -82,6 +82,7 @@ class SprintSyncCommand extends BaseCommand
             if ($sprintIssue) {
                 $sprintIssue->setCompleted($issue->getCompleted());
                 $sprintIssue->setComplexity($issue->getComplexity());
+                $issue = $sprintIssue;
             } else {
                 $sprintIssue = $this->getIssueRepository()->findOneBy(
                     ['name' => $issue->getName()]
