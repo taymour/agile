@@ -1,68 +1,96 @@
-Symfony Standard Edition
-========================
+Jira Agile Burndown
+=============
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Install
+-------
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+_If you are willing to use our Vagrantfile, the project lives inside the /vagrant directory_
 
-What's inside?
---------------
+### Install composer
 
-The Symfony Standard Edition is configured with the following defaults:
+_This is done automatically in the vagrant box._
+```bash
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    # php -r "if (hash_file('SHA384', 'composer-setup.php') === '92102166af5abdb03f49ce52a40591073a7b859a86e8ff13338cf7db58a19f7844fbc0bb79b2773bf30791e935dbd938') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+    sudo mv composer.phar /usr/local/bin/composer
+```
 
-  * An AppBundle you can use to start coding;
+### Install dependencies
 
-  * Twig as the only configured template engine;
+```bash
+composer install
+```
 
-  * Doctrine ORM/DBAL;
+### Prepare the database
 
-  * Swiftmailer;
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:create
+```
 
-  * Annotations enabled for everything.
+Workflow
+--------
 
-It comes pre-configured with the following bundles:
+### Start a sprint
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+```bash
+# will create an empty entry in the database
+php bin/console agile:sprint:create SPRINT_NAME
+# Retrieve all issues and set them as started when the sprint started
+php bin/console agile:sprint:sync -i
+```
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+If, for some reason, some tickets have been added between the time the sprint started and the time you use the `agile:sprint:sync -i` command, you need to mark each issue as added:
+```bash
+php bin/console agile:issue:added ISSUE_ID
+```
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+### Synchronize data
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+If you want to get the status after the sprint is started, you must synchronize with Jira
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+```bash
+php bin/console agile:sprint:sync
+```
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+### Show the progress
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+```bash
+php bin/console agile:sprint:status
+```
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+Example of output:
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+> * 16 Total issues
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+Number of issues that should be treated
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
+> * 3 Added issues
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+Number of issues added after the sprint started
 
-Enjoy!
+> * 5 Completed issues
 
-[1]:  https://symfony.com/doc/3.0/book/installation.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.0/book/doctrine.html
-[8]:  https://symfony.com/doc/3.0/book/templating.html
-[9]:  https://symfony.com/doc/3.0/book/security.html
-[10]: https://symfony.com/doc/3.0/cookbook/email.html
-[11]: https://symfony.com/doc/3.0/cookbook/logging/monolog.html
-[13]: https://symfony.com/doc/3.0/bundles/SensioGeneratorBundle/index.html
+Number of issues completed
+
+> * 11 Not completed issues
+
+Number of issues left
+
+> * 10 Initial total complexity
+
+Complexity when the sprint started.
+When we create or burn-down chart, we trace a black dotted line to see our common global objective.
+
+> * 3.5 Initial Completed complexity
+
+> * 0.75 Added after sprint start total complexity
+
+When we report this on our burn-down chart, we add this information each day on top of our black-dotted line
+
+> * 0.75 Added after sprint start Completed complexity
+
+Total Complexity spent on issues added after the sprint started.
+This data is used in addition with "Initial completed complexity" data to report our current overall completed complexity.
