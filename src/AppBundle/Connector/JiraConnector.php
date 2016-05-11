@@ -10,21 +10,12 @@ class JiraConnector
     const REST_PROJECT = '/rest/api/2/project/';
 
     private $jiraApiDomainName;
-    private $project;
     private $credentials;
 
-    public function __construct($jiraApiDomainName = 'jira.atlassian.com', $project, $credentials)
+    public function __construct($jiraApiDomainName = 'jira.atlassian.com', $credentials)
     {
         $this->jiraApiDomainName = $jiraApiDomainName;
-        $this->project = $project;
         $this->credentials = $credentials;
-    }
-
-    public function getProject()
-    {
-        $project = $this->fetchApi(sprintf('%s%s', static::REST_PROJECT, $this->project));
-
-        return $project;
     }
 
     public function getSprintIssues($sprintName)
@@ -41,7 +32,6 @@ class JiraConnector
                 'status',
             ]
         ]);
-
         $issues = [];
 
         foreach ($issuesList->issues as $issue) {
@@ -64,7 +54,6 @@ class JiraConnector
     private function fetchApi($uri, $data = null)
     {
         $url = sprintf('https://%s%s', $this->jiraApiDomainName, $uri);
-
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_URL, $url);
