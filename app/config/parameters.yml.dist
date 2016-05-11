@@ -17,3 +17,5 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+    jira_api_domain_name: pmdtech.atlassian.net
+    jira_api_credentials: credentials
